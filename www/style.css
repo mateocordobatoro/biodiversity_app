@@ -1,0 +1,89 @@
+/* Barra superior */
+.navbar {
+  background-color: #3cb6d3;
+  padding: 15px;
+}
+
+.search-bar {
+  flex-grow: 1;
+  max-width: 500px;
+}
+
+.search-bar input {
+  border-radius: 20px;
+  padding: 10px;
+}
+
+/* Barra de Filtros */
+.filter-bar {
+  background-color: white;
+  padding: 10px 0;
+}
+
+.filter-item {
+  width: 150px;
+  background-color: #eaeeee;
+}
+
+.btn-filter {
+  background-color: #eaeeee;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn-alert {
+  background-color: #27788a;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Contenedores principales */
+.main-container {
+  display: flex;
+  height: calc(100vh - 140px); /* Resta el tamaño de la barra superior y filtros */
+}
+
+.left-panel {
+  width: 65%;
+   height: 100%;
+  background-color: lightgray;
+  overflow: hidden; 
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.right-panel {
+  width: 35%;
+  padding: 10px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.listing-card {
+  display: flex;
+  margin-bottom: 15px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.listing-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.listing-info {
+  margin-left: 10px;
+}
+
+.listing-info p {
+  margin: 0;
+}
