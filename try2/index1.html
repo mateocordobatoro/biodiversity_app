@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodiversity Searcher</title>
+    <link rel="stylesheet" href="www/style1.css"> <!-- External CSS file -->
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">Biodiversity App</a>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Species Reports</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </nav>
+            <div class="login-buttons">
+                <button class="login-btn">Login</button>
+                <button class="post-btn">Post a Sighting</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Discover Biodiversity Around You!</h1>
+        <p>Thousands of species sightings across Poland.</p>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search Species, Location, or Date" oninput="showMatches(this.value)">
+            <button id="search-button">Search</button>
+        </div>
+        <ul id="match-list"></ul> <!-- Suggestions dropdown -->
+    </section>
+
+    <section class="popular-cities">
+        <h2>Popular Species</h2>
+        <p>Find your next wildlife encounter across Poland!</p>
+        <div class="city-grid">
+            <div class="city-item">
+                <img src="img/species1.jpg" alt="Species 1">
+                <h3>White Stork</h3>
+            </div>
+            <div class="city-item">
+                <img src="img/species2.jpg" alt="Species 2">
+                <h3>European Bison</h3>
+            </div>
+            <div class="city-item">
+                <img src="img/species3.jpg" alt="Species 3">
+                <h3>Gray Wolf</h3>
+            </div>
+        </div>
+    </section>
+
+    <script src="www/script.js"></script> <!-- External JavaScript file -->
+</body>
+</html>
