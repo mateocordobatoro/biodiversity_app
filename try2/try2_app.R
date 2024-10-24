@@ -3,26 +3,28 @@ library(dplyr)
 library(readr)
 library(shinyjs)
 library(shinybusy)
+library(leaflet)
+library(plotly)
 
 
-data <- read_csv("~/MateoDS/biodiversity_app/data/poland_data_sample.csv")
+biodata <- read_csv("~/MateoDS/biodiversity_app/data/poland_data_sample.csv")
 
+source("~/MateoDS/biodiversity_app/try2/graphs/graphs.R")
 
-data <- data %>% 
-  select(scientificName,vernacularName,longitudeDecimal, latitudeDecimal, eventDate) %>% 
-  filter(scientificName %in% c("Lanius collurio",        
-                             "Grus grus ",             
-                             "Emberiza citrinella",    
-                             "Ciconia ciconia" ,       
-                             "Carpodacus erythrinus")) 
+biodata <- data %>%
+  filter(scientificName %in% c("Lanius collurio",
+                             "Grus grus ",
+                             "Emberiza citrinella",
+                             "Ciconia ciconia" ,
+                             "Carpodacus erythrinus"))
 
 
 
 ui_search_bar <- function(id, choices, place_holder){
-  
-  
+
+
   selectizeInput(
-    inputId = id, 
+    inputId = id,
     label = "",
     multiple = FALSE,
     choices = c("Search Bar" = "", choices),
@@ -35,14 +37,14 @@ ui_search_bar <- function(id, choices, place_holder){
     ),
     width = '40%'
   )
-  
+
 }
 
 search_ui <- tagList(
-  
+
   htmlTemplate('index.html',
                search_ui_search_bar = ui_search_bar('search_ui_search_bar',
-                                                    data$scientificName,
+                                                    unique(data$scientificName),
                                                     'scientific or vernacular name ...'),
                input1 = selectInput('species', 'Species', choices = c("Lanius collurio",
                                                              "Grus grus ")),
@@ -53,9 +55,8 @@ search_ui <- tagList(
                input4 = selectInput('day', 'Day', choices = c(1, 2, 3, 4, 5, 6, 7)),
                filter_button = actionButton('filter_button', 'Filter', icon = icon('filter')),
                map = leafletOutput('map', height = '100%', width = '100%'),
-               plot1 = plotOutput('plot1'),
-               plot2 = plotOutput('plot2'),
-               plot3 = plotOutput('plot3')
+               plot1 = plotlyOutput('plot1'),
+               plot2 = plotlyOutput('plot2')
                )
 
 )
@@ -96,7 +97,7 @@ home_ui <- tagList(
                           inputId = "search_input", 
                           label = "",
                           multiple = FALSE,
-                          choices = c("Search Bar" = "", data$scientificName, data$vernacularName),
+                          choices = c("Search Bar" = "", unique(c(biodata$scientificName, biodata$vernacularName))),
                           options = list(
                             create = FALSE,
                             placeholder = "scientific or vernacular name ...",
@@ -130,12 +131,17 @@ home_ui <- tagList(
                )
   ),
   
+  # 
+  # leafletOutput("map"),
+  # plotlyOutput("plot1"),
+  # plotlyOutput("plot2"),
+  
   # Include external JS file
   tags$script(src = "www/script.js")
 )
 
 ui <- tagList(
-  uiOutput('dynamic_ui')
+  uiOutput("dynamic_ui")
 )
 
 # Server (if needed)
@@ -143,46 +149,65 @@ server <- function(input, output, session) {
   
   # Reactive value to store the selected species
   selected_species <- reactiveVal(NULL)
-  
+
   # Observe the species selection
   observeEvent(input$search_input, {
     selected_species(input$search_input)
   })
-  
+
 
   # Render the UI dynamically based on whether a species has been selected
   output$dynamic_ui <- renderUI({
+    
     if (is.null(selected_species()) || selected_species() == "") {
       home_ui  # Show home page if no species is selected
     } else {
-      
-      Sys.sleep(0.5)
+      #home_ui
       search_ui  # Show search results page if a species is selected
 
-      
+
     }
+
   })
-  
+
+
   
   ##### search results server ---------
   
+  
+  
+  species_data <- reactive({
+    
+    
+    x <- biodata %>% filter(scientificName == selected_species() | vernacularName == selected_species())
+    
+    return(x)
+    
+  })
+  
   output$map <- renderLeaflet({
-    leaflet() %>%
-      addTiles() %>%
-      setView(lng = 19.1451, lat = 52.1625, zoom = 6)  # Centered on Poland
+    
+    req(selected_species())
+    
+    species_map(species_data())
+    
   })
   
-  # Example placeholders for plot outputs
-  output$plot1 <- renderPlot({
-    plot(cars)
+  
+  output$plot1 <- renderPlotly({
+    
+    req(selected_species())
+    
+    heatmap_plot(species_data())
+    
   })
   
-  output$plot2 <- renderPlot({
-    plot(pressure)
-  })
-  
-  output$plot3 <- renderPlot({
-    plot(mtcars)
+  output$plot2 <- renderPlotly({
+    
+    req(selected_species())
+    
+    bar_chart(species_data())
+    
   })
   
 }
